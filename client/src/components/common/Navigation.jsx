@@ -5,7 +5,7 @@ import { AuthContext } from '../auth/AuthContext';
 import NavIcon from '../../assets/logo.png';
 
 const Navigation = () => {
-  const { isAuthenticated, hasPurchasedCourses, logout } = useContext(AuthContext);
+  const { isAuthenticated, hasPurchasedCourses, userRole, logout } = useContext(AuthContext); // Assume userRole is provided by AuthContext
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();   
 
@@ -33,22 +33,29 @@ const Navigation = () => {
           <Link to="/" className="text-white hover:text-green-300 mx-4">
             Home
           </Link>
-          <Link to="/blogs" className="text-white hover:text-green-300 mx-4">
-            Blogs
-          </Link>
-          <Link to="/courses" className="text-white hover:text-green-300 mx-4">
-            Courses
+          <Link to="/event-list" className="text-white hover:text-green-300 mx-4">
+            Events
           </Link>
           <Link to="/team" className="text-white hover:text-green-300 mx-4">
             Meet Team
           </Link>
+
           {isAuthenticated ? (
             <>
+              {/* Show My Courses if the user has purchased any courses */}
               {hasPurchasedCourses && (
                 <Link to="/my-courses" className="text-white hover:text-green-300 mx-4">
                   My Courses
                 </Link>
               )}
+
+              {/* Show Dashboard if the user is an event organizer */}
+              {userRole === 'Event Organizer' && (
+                <Link to="event-form" className="text-white hover:text-green-300 mx-4">
+                  Add Event
+                </Link>
+              )}
+
               <button onClick={onLogout} className="text-white hover:text-green-300 mx-4">
                 Logout
               </button>
@@ -70,7 +77,8 @@ const Navigation = () => {
           </button>
         </div>
       </div>
-      {isOpen && ( 
+      
+      {isOpen && (
         <div className="md:hidden flex flex-col items-center bg-[#3434344f] bg-opacity-50 backdrop-blur-xl p-10">
           <Link to="/" className="text-white hover:text-green-300 mx-4 my-4" onClick={toggleMenu}>
             Home
@@ -78,9 +86,7 @@ const Navigation = () => {
           <Link to="/courses" className="text-white hover:text-green-300 mx-4 my-4" onClick={toggleMenu}>
             Courses
           </Link>
-          <Link to="/team" className="text-white hover:text-green-300 mx-4 my-4" onClick={toggleMenu}>
-            Meet Team
-          </Link>
+
           {isAuthenticated ? (
             <>
               {hasPurchasedCourses && (
@@ -88,6 +94,14 @@ const Navigation = () => {
                   My Courses
                 </Link>
               )}
+
+              {/* Show Dashboard if the user is an event organizer */}
+              {userRole === 'organizer' && (
+                <Link to="/dashboard" className="text-white hover:text-green-300 mx-4 my-4" onClick={toggleMenu}>
+                  Dashboard
+                </Link>
+              )}
+
               <button onClick={() => { onLogout(); toggleMenu(); }} className="text-white hover:text-green-300 mx-4 my-4">
                 Logout
               </button>

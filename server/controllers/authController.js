@@ -8,14 +8,15 @@ require('dotenv').config();
 const secretKey = process.env.SECRET_KEY;
 const refreshSecretKey = process.env.REFRESH_SECRET_KEY;
 
+// Registration handler with role
 exports.register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, role } = req.body; // Role is expected from the request
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const connection = await initializeConnection();
-    const sql = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
-    await connection.query(sql, [username, email, hashedPassword]);
+    const sql = "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)";
+    await connection.query(sql, [username, email, hashedPassword, role]); // Role added to query
 
     res.status(201).send("User registered successfully");
   } catch (error) {
@@ -24,6 +25,7 @@ exports.register = async (req, res) => {
   }
 };
 
+// Login handler with role in JWT
 exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -41,20 +43,32 @@ exports.login = async (req, res) => {
       return res.status(401).send("Invalid username or password");
     }
 
-    const token = jwt.sign({ id: user.id, username: user.username }, secretKey, { expiresIn: "24h" });
-    const refreshToken = jwt.sign({ id: user.id, username: user.username }, refreshSecretKey);
+    // Generate JWT and refresh tokens
+    const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, secretKey, { expiresIn: "24h" });
+    const refreshToken = jwt.sign({ id: user.id, username: user.username, role: user.role }, refreshSecretKey);
 
     // Store the refresh token in the database
     const updateTokenSql = "UPDATE users SET refresh_token = ? WHERE id = ?";
     await connection.query(updateTokenSql, [refreshToken, user.id]);
 
-    res.json({ token, refreshToken });
+    // Return token, refreshToken, and user details to the frontend
+    res.json({
+      token,
+      refreshToken,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role
+      }
+    });
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).send("Error logging in");
   }
 };
 
+// Token refresh handler
 exports.refreshToken = async (req, res) => {
   const { refreshToken } = req.body;
   if (!refreshToken) {
@@ -72,7 +86,7 @@ exports.refreshToken = async (req, res) => {
     }
 
     const user = results[0];
-    const newToken = jwt.sign({ id: user.id, username: user.username }, secretKey, { expiresIn: "24h" });
+    const newToken = jwt.sign({ id: user.id, username: user.username, role: user.role }, secretKey, { expiresIn: "24h" });
 
     res.json({ token: newToken });
   } catch (error) {
@@ -81,7 +95,29 @@ exports.refreshToken = async (req, res) => {
   }
 };
 
+// Protected route example
 exports.protected = (req, res) => {
-  const { username } = req.user;
-  res.send(`Welcome ${username}! This is a protected route.`);
+  const { username, role } = req.user; // Role is included in the token
+  res.send(`Welcome ${username}! Your role is ${role}. This is a protected route.`);
+};
+
+// Fetch user role for authenticated users
+exports.getUserRole = async (req, res) => {
+  const userId = req.user.id; // Assumes that the user is authenticated and the token middleware attaches user info
+  const connection = await initializeConnection();
+
+  try {
+    const sql = "SELECT role FROM users WHERE id = ?";
+    const [results] = await connection.query(sql, [userId]);
+
+    if (results.length === 0) {
+      return res.status(404).send("User not found");
+    }
+
+    const { role } = results[0];
+    res.json({ role });
+  } catch (error) {
+    console.error("Error fetching user role:", error);
+    res.status(500).send("Error fetching user role");
+  }
 };

@@ -17,7 +17,7 @@ exports.storePurchase = async (req, res) => {
 
     if (userResults.length === 0) {
       return res.status(400).send("User does not exist");
-    }
+    } 
 
     const userId = userResults[0].id;
     const email = userResults[0].email;

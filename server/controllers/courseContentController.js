@@ -4,7 +4,7 @@ exports.getCourseContent = async (req, res) => {
     const { username } = req.user;
     const courseId = parseInt(req.params.id);
       const sql = `
-        SELECT c.name, c.description, c.vimeoVideoId, c.syllabus, c.instructor_bio, c.testimonials
+        SELECT c.name, c.description,
         FROM purchased_courses pc 
         JOIN courses c ON pc.course_id = c.id 
         JOIN users u ON pc.user_id = u.id 
