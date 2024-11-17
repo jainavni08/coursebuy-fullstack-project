@@ -30,7 +30,7 @@ exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
     const connection = await initializeConnection();
-    const sql = "SELECT * FROM users WHERE username = ?";
+    const sql = "SELECT * FROM sponserhub.users WHERE username = ?";
     const [results] = await connection.query(sql, [username]);
 
     if (results.length === 0) {
@@ -48,7 +48,7 @@ exports.login = async (req, res) => {
     const refreshToken = jwt.sign({ id: user.id, username: user.username, role: user.role }, refreshSecretKey);
 
     // Store the refresh token in the database
-    const updateTokenSql = "UPDATE users SET refresh_token = ? WHERE id = ?";
+    const updateTokenSql = "UPDATE sponserhub.users SET refresh_token = ? WHERE id = ?";
     await connection.query(updateTokenSql, [refreshToken, user.id]);
 
     // Return token, refreshToken, and user details to the frontend
@@ -78,7 +78,7 @@ exports.refreshToken = async (req, res) => {
   try {
     const decoded = jwt.verify(refreshToken, refreshSecretKey);
     const connection = await initializeConnection();
-    const sql = "SELECT * FROM users WHERE id = ? AND refresh_token = ?";
+    const sql = "SELECT * FROM sponserhub.users WHERE id = ? AND refresh_token = ?";
     const [results] = await connection.query(sql, [decoded.id, refreshToken]);
 
     if (results.length === 0) {
@@ -107,7 +107,7 @@ exports.getUserRole = async (req, res) => {
   const connection = await initializeConnection();
 
   try {
-    const sql = "SELECT role FROM users WHERE id = ?";
+    const sql = "SELECT role FROM sponserhub.users WHERE id = ?";
     const [results] = await connection.query(sql, [userId]);
 
     if (results.length === 0) {
@@ -121,3 +121,46 @@ exports.getUserRole = async (req, res) => {
     res.status(500).send("Error fetching user role");
   }
 };
+
+exports.getUserData = async (req, res) => {
+  const userId = req.user.id; // Assumes that the user is authenticated and the token middleware attaches user info
+
+  try {
+    const connection = await initializeConnection();
+    const sql = "SELECT id, username, email, role FROM sponserhub.users WHERE id = ?";
+    const [results] = await connection.query(sql, [userId]);
+
+    if (results.length === 0) {
+      return res.status(404).send("User not found");
+    }
+
+    res.json({
+      id: results[0].id,
+      username: results[0].username,
+      email: results[0].email,
+      role: results[0].role,
+    });
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    res.status(500).send("Error fetching user data");
+  }
+};
+
+exports.getUserEvents = async (req, res) => {
+  const userId = req.user.id; // assuming `req.user` is populated by your `authenticateToken` middleware
+
+  try {
+    const connection = await initializeConnection();
+    const sql = "SELECT * FROM sponserhub.events e join sponserhub.users u on e.organizerid = u.id and u.id = ?"; // assuming `createdBy` is the column storing the user ID who created the event
+    const [results] = await connection.query(sql, [userId]);
+
+    res.json({ events: results });
+  } catch (error) {
+    console.error("Error fetching user events:", error);
+    res.status(500).send("Error fetching user events");
+  }
+};
+
+
+
+

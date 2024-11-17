@@ -22,8 +22,6 @@ const EventList = () => {
   return (
     <div className="event-list container mx-auto p-4">
       <h1 className="text-4xl font-bold mb-8 text-center text-gray-200">Events</h1>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
         {events.map((event) => (
           <div key={event.eventid} className="bg-[#001313] p-6 rounded-lg shadow-md hover:shadow-green-300 transition-shadow duration-300">
             {/* Image Section */}
@@ -43,7 +41,7 @@ const EventList = () => {
           </div>
         ))}
       </div>
-    </div>
+   
   );
 };
 

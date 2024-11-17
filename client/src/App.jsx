@@ -23,11 +23,13 @@ import EventOrganizerHomePage from './EventOrganizerHomePage';
 import EventSponsorHomePage from './EventSponserHomePage';
 import Gig from './events/Gig';
 import EventPage from './events/eventPage';
-import EventList from './events/EventList';
+import EventList from './events/EventList.jsx';
 import EventForm from './events/EventForm';
-import Books from './books/Books';
+import Books from './books/YourEvents';
 import Add from './books/Add';
 import Update from './books/Update';
+import Create from './components/event organizer/Create';
+
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState(null);
@@ -65,6 +67,7 @@ const App = () => {
            <Route path="/login" element={<Login onLogin={handleLogin} />} />
            <Route path="/courses" element={<Courses />} />
            <Route path="/event/:eventid" element={<Gig />} />
+           <Route path="/update/:eventid" element={<Update />} />
            <Route path="/event-page" element={<EventPage />} />
            <Route path="/event-list" element={<EventList />} />
            <Route path="/event-form" element={<EventForm />} />
@@ -79,7 +82,8 @@ const App = () => {
            <Route path="/dashboard" element={<Dashboard />} />
            <Route path="/books" element={<Books />} />
            <Route path="/add" element={<Add />} />
-           <Route path="/update" element={<Update />} />
+           <Route path="/create" element={<Create />} />
+           
           </Routes>
           <Footer />
         </div>

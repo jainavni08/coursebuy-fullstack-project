@@ -19,14 +19,14 @@ const Register = ({ onLogin }) => {
         body: JSON.stringify({ username, password, email, role }) // Send role in request body
       });
       if (response.ok) {
-        alert('Registration successful!');
+        alert('Registratiion successful!');
         //onLogin();
         navigate('/login');
       } else {
-        alert('Error registering user');
+        alert('Error registering');
       }
     } catch (error) {
-      alert('Error registering user');
+      alert('Error registering');
     }
   };
 

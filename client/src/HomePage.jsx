@@ -20,7 +20,7 @@ const MainPage = () => {
               Welcome to,
               <span className="bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text text-transparent">
                 {" "}
-                SponserHub{" "}
+                SponsorHub{" "}
               </span>
               !
             </h1>
@@ -29,7 +29,7 @@ const MainPage = () => {
               Are you ready to take your events to the next level or find the perfect sponsorship opportunity?
             </p>
             <p className="mx-auto mt-4 max-w-xl sm:text-xl/relaxed text-gray-200">
-              Start now as:
+              Start now:
             </p>
 
             <div className="mt-8 flex flex-wrap justify-center gap-4">
@@ -50,7 +50,7 @@ const MainPage = () => {
               <div>
                 {/*<Link to="/gig">GIG PAGE</Link>
                 <Link to="/event-form">EVENT form</Link>*/}
-                <Link to="/event-list">EVENT PAGE</Link>
+                <Link to="/event-list" className="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-100 ring-1 ring-gray-300/50 hover:ring-gray-300/70">EVENT PAGE</Link>
               </div>
             </div>
           </div>

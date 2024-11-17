@@ -36,9 +36,7 @@ const Navigation = () => {
           <Link to="/event-list" className="text-white hover:text-green-300 mx-4">
             Events
           </Link>
-          <Link to="/team" className="text-white hover:text-green-300 mx-4">
-            Meet Team
-          </Link>
+          
 
           {isAuthenticated ? (
             <>
@@ -51,9 +49,11 @@ const Navigation = () => {
 
               {/* Show Dashboard if the user is an event organizer */}
               {userRole === 'Event Organizer' && (
-                <Link to="event-form" className="text-white hover:text-green-300 mx-4">
-                  Add Event
+                <Link to="/dashboard" className="text-white hover:text-green-300 mx-4">
+                  Dashboard
                 </Link>
+
+                
               )}
 
               <button onClick={onLogout} className="text-white hover:text-green-300 mx-4">

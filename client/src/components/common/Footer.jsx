@@ -12,24 +12,9 @@ export default function Footer() {
             >
               Home
             </Link>
-            <Link
-              to="/Courses"
-              className="text-md leading-6 text-gray-100"
-            >
-              Courses
-            </Link>
-            <Link
-              to="/blogs"
-              className="text-md leading-6 text-gray-100"
-            >
-              Blogs
-            </Link>
-            <Link
-              to="/team"
-              className="text-md leading-6 text-gray-100"
-            >
-              Team
-            </Link>
+            
+            
+            
             <Link
               to="/blogs"
               className="text-md leading-6 text-gray-100"

@@ -25,7 +25,7 @@ const Login = () => {
         localStorage.setItem('refreshToken', data.refreshToken);
         localStorage.setItem('user', JSON.stringify(data.user)); 
         login();
-        navigate('/event-list');
+        navigate('/dashboard');
       } else {
         alert(data.message || 'Error logging in');
       }

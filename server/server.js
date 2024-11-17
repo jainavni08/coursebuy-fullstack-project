@@ -11,7 +11,7 @@ app.use(cors({
     origin: [
       "http://localhost:5173",
     ],
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT", "DELETE" ],
     allowedHeaders: ["Content-Type", "Authorization"],
   }));
 
@@ -31,6 +31,8 @@ app.use("/store-purchase", storePurchaseRoutes);
 app.use("/course-content", courseContentRoutes);
 app.use("/events",eventRoutes);
 app.use(express.json());
+
+
 
 initializeConnection()
   .then((connection) => {
